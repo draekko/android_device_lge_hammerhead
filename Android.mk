@@ -23,6 +23,10 @@
 # *not* include it on all devices, so it is safe even with hardware-specific
 # components.
 
+APP_CXXFLAGS := "-fopenmp $(APP_CXXFLAGS)"
+APP_CFLAGS := "-fopenmp $(APP_CFLAGS)"
+APP_LDFLAGS := "-fopenmp $(APP_LDFLAGS)"
+
 ifneq ($(filter hammerhead, $(TARGET_DEVICE)),)
 
 LOCAL_PATH := $(call my-dir)

@@ -32,22 +32,6 @@ BOARD_KERNEL_CMDLINE := console=ttyHSL0,115200,n8 androidboot.hardware=hammerhea
 BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x02900000 --tags_offset 0x02700000
 BOARD_KERNEL_IMAGE_NAME := zImage-dtb
 
-ifeq ($(ARM_EABI_TOOLCHAIN),)
-TARGET_KERNEL_CROSS_COMPILE_PREFIX := arm-eabi-
-KERNEL_TOOLCHAIN := $(subst linux-androideabi,eabi,$(ANDROID_TOOLCHAIN))
-ifeq ($(wildcard $(KERNEL_TOOLCHAIN)),)
-KERNEL_TOOLCHAIN := $(subst $(TARGET_GCC_VERSION),4.8,$(KERNEL_TOOLCHAIN))
-endif
-ifeq ($(wildcard $(KERNEL_TOOLCHAIN)),)
-TARGET_KERNEL_CROSS_COMPILE_PREFIX := arm-none-eabi-
-KERNEL_TOOLCHAIN :=
-else
-ARM_EABI_TOOLCHAIN := $(KERNEL_TOOLCHAIN)
-endif
-endif
-
-ARM_CROSS_COMPILE ?= $(KERNEL_CROSS_COMPILE)
-
 # Shader cache config options
 # Maximum size of the  GLES Shaders that can be cached for reuse.
 # Increase the size if shaders of size greater than 12KB are used.
@@ -96,7 +80,6 @@ ifeq ($(HOST_OS),linux)
   ifeq ($(TARGET_BUILD_VARIANT),user)
     ifeq ($(WITH_DEXPREOPT),)
       WITH_DEXPREOPT := true
-      WITH_DEXPREOPT_BOOT_IMG_AND_SYSTEM_SERVER_ONLY := true
     endif
   endif
 endif
@@ -113,7 +96,7 @@ BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_FLASH_BLOCK_SIZE := 131072
 
 # Define kernel config for inline building
-TARGET_KERNEL_CONFIG := lineageos_hammerhead_defconfig
+TARGET_KERNEL_CONFIG := hammerhead_defconfig
 TARGET_KERNEL_SOURCE := kernel/lge/hammerhead
 
 BOARD_CHARGER_ENABLE_SUSPEND := true
@@ -138,9 +121,6 @@ TARGET_TOUCHBOOST_FREQUENCY:= 1200
 USE_DEVICE_SPECIFIC_QCOM_PROPRIETARY:= true
 USE_DEVICE_SPECIFIC_CAMERA:= true
 
-# Some of our vendor libs have text relocations
 TARGET_NEEDS_PLATFORM_TEXT_RELOCATIONS:= true
-TARGET_NEEDS_PLATFORM_TEXTRELS := \
-    $(TARGET_NEEDS_PLATFORM_TEXT_RELOCATIONS)
 
 -include vendor/lge/hammerhead/BoardConfigVendor.mk
